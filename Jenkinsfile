@@ -74,7 +74,7 @@ pipeline {
                         sh 'docker-compose restart'
                     } else {
                         echo "Docker Compose is not running, starting services."
-                        sh 'docker-compose up -d'
+                        sh 'docker-compose up --build -d'
                     }
                 }
             }
