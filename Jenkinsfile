@@ -66,15 +66,17 @@ pipeline {
                 }
             }
             steps {
-                script {
-                    def isDockerComposeRunning = sh(script: 'docker-compose ps -q', returnStatus: true) == 0
+                dir('/mnt/c/Users/socia/Desktop/jenkinstask') {
+                    script {
+                        def isDockerComposeRunning = sh(script: 'docker-compose ps -q', returnStatus: true) == 0
 
-                    if (isDockerComposeRunning) {
-                        echo "Docker Compose is already running, restarting services."
-                        sh 'docker-compose restart'
-                    } else {
-                        echo "Docker Compose is not running, starting services."
-                        sh 'docker-compose up --build -d'
+                        if (isDockerComposeRunning) {
+                            echo "Docker Compose is already running, restarting services."
+                            sh 'docker-compose restart'
+                        } else {
+                            echo "Docker Compose is not running, starting services."
+                            sh 'docker-compose up --build -d'
+                        }
                     }
                 }
             }
