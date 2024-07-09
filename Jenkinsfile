@@ -2,46 +2,25 @@ pipeline {
     agent any
 
     stages {
-        stage('Check Directory') {
+        stage('Check Docker-Compose Status') {
             steps {
                 script {
-                    echo "Current directory: ${pwd()}"
-                }
-            }
-        }
-
-        stage('Check Changes in app.js') {
-            steps {
-                script {
-                    // Check if there are changes in app.js in the last commit
-                    def changes = sh(script: 'git diff-tree --no-commit-id --name-only -r HEAD | grep app.js', returnStatus: true) == 0
-                    if (changes) {
-                        echo 'Changes detected in app.js'
-                        env.CHANGES_IN_APP_JS = 'true'
-                    } else {
-                        echo 'No changes detected in app.js'
-                        env.CHANGES_IN_APP_JS = 'false'
-                    }
-                }
-            }
-        }
-
-        stage('Manage Docker Compose') {
-            steps {
-                script {
-                    // Check if Docker Compose services are running
-                    def dockerComposePs = sh(script: 'docker ps -q', returnStatus: true).trim()
-                    if (dockerComposePs == 0) {
-                        echo 'Docker Compose services are running.'
-                        if (env.CHANGES_IN_APP_JS == 'true') {
-                            echo 'Changes detected in app.js, restarting Docker Compose services...'
+                    def composeStatus = sh(script: 'docker-compose ps -q', returnStatus: true).exitCode
+                    if (composeStatus == 0) {
+                        echo 'Docker Compose is up'
+                        // Check for changes in app.js
+                        def changes = sh(script: 'git diff --name-only HEAD^ HEAD', returnStdout: true).trim()
+                        if (changes.contains('app.js')) {
+                            echo 'Changes detected in app.js'
+                            // Stop and rebuild docker-compose
                             sh 'docker-compose down'
                             sh 'docker-compose up --build -d'
                         } else {
-                            echo 'No changes in app.js, Docker Compose services are running normally.'
+                            echo 'No changes in app.js, skipping docker-compose actions'
                         }
                     } else {
-                        echo 'Docker Compose services are not running. Starting services...'
+                        echo 'Docker Compose is down'
+                        // Start docker-compose
                         sh 'docker-compose up --build -d'
                     }
                 }
