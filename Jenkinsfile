@@ -4,6 +4,7 @@ pipeline {
     stages {
         stage('Check Docker-Compose Status') {
             steps {
+                sh 'docker-compose ps -q'
                 script {
                     def composeStatus = sh(script: 'docker-compose ps -q', returnStatus: true).exitCode
                     if (composeStatus == 0) {
