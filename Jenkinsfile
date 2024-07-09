@@ -66,7 +66,6 @@ pipeline {
                 }
             }
             steps {
-                dir('/mnt/c/Users/socia/Desktop/jenkinstask') {
                     script {
                         def isDockerComposeRunning = sh(script: 'docker-compose ps -q', returnStatus: true) == 0
 
