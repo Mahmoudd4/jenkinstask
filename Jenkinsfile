@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     // Check if Docker Compose services are running
-                    def dockerComposePs = sh(script: 'docker ps', returnStdout: true).trim()
+                    def dockerComposePs = sh(script: 'docker-compose ps', returnStdout: true).trim()
                     if (dockerComposePs) {
                         echo 'Docker Compose services are running.'
                         if (env.CHANGES_IN_APP_JS == 'true') {
