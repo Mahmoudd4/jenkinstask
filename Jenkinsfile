@@ -4,10 +4,10 @@ pipeline {
     stages {
         stage('Check Docker-Compose Status') {
             steps {
-                sh 'docker-compose ps -q'
                 script {
-                    def composeStatus = sh(script: 'docker-compose ps -q', returnStatus: true).exitCode
-                    if (composeStatus == 0) {
+                    // Check if docker-compose containers are running
+                    def isComposeRunning = sh(script: 'docker ps --filter "name=jenkinstask_" --format "{{.ID}}" | wc -l', returnStdout: true).trim()
+                    if (isComposeRunning.toInteger() > 0) {
                         echo 'Docker Compose is up'
                         // Check for changes in app.js
                         def changes = sh(script: 'git diff --name-only HEAD^ HEAD', returnStdout: true).trim()
