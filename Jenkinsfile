@@ -35,7 +35,8 @@ pipeline {
                         echo 'Docker Compose services are running.'
                         if (env.CHANGES_IN_APP_JS == 'true') {
                             echo 'Restarting Docker Compose services...'
-                            sh 'docker-compose restart'
+                            sh 'docker-compose down'
+                            sh 'docker-compose up --build'
                         } else {
                             echo 'No changes in app.js, Docker Compose services are running normally.'
                         }
