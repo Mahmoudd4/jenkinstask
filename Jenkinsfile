@@ -7,17 +7,17 @@ pipeline {
     //}
 
     stages {
-        stage('Checkout') {
-            steps {
+        //stage('Checkout') {
+          //  steps {
                 // Checkout code from the repository
-                checkout scm
-            }
-        }
+            //    checkout scm
+            //}
+        //}
 
         stage('Build and Deploy') {
             steps {
                 script {
-                    sh 'pwd ; ls'
+                    sh 'pwd ; ls ; docker ps; docker ps -a ; docker compose ps; docker compose -a'
                     // Run Docker Compose up with the --build option
                     sh 'docker-compose down' // Stop any running containers to ensure a clean start
                     sh 'docker-compose up -d' // Build and start the containers in detached mode
