@@ -17,6 +17,7 @@ pipeline {
         stage('Build and Deploy') {
             steps {
                 script {
+                    sh 'cd /home/mahmoud/Desktop/jenkinstask'
                     sh 'pwd ; ls'
                  // Run Docker Compose up with the --build option
                     sh 'docker-compose down' // Stop any running containers to ensure a clean start
